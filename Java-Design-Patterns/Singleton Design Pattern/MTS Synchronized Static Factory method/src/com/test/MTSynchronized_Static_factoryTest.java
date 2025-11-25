@@ -11,3 +11,11 @@ public class MTSynchronized_Static_factoryTest {
         t3.start();
     }
 }
+/* output: 
+TicketBookingOperation.run()
+TicketBookingOperation.run()
+TicketBookingOperation.run()
+0-param constructor
+436160393
+436160393
+436160393 */
