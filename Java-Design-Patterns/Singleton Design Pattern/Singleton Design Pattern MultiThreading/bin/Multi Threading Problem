@@ -1,0 +1,32 @@
+⚠️ Singleton Issue in Multithreaded Environments
+
+If multiple threads from the same client application or different client applications call Printer.getInstance() simultaneously, 
+and the thread switching happens at the wrong time during the execution of the singleton logic, there is a possibility of creating multiple objects of the Singleton class.
+
+This becomes a serious problem when a Singleton class is used as a helper class for Servlets or JSP components, 
+which run in a multithreaded web environment. Multiple threads are created for parallel client requests, and without proper synchronization, the Singleton pattern can break, leading to multiple instances.
+
+✅ Solutions to Make Singleton Thread-Safe
+Below are the six standard solutions to ensure a thread-safe Singleton implementation in Java:
+
+1. Synchronized Static Factory Method
+Synchronize the entire getInstance() method.
+
+2. Synchronized Block Inside Static Factory Method
+Use a synchronization block inside the method to reduce overhead.
+
+3. Double-Checked Locking with Synchronized Block (Best Approach #1)
+Check for null twice — once without locking and once inside a synchronized block.
+This is widely considered one of the best lazy-loaded Singleton implementations.
+
+4. Eager Instantiation
+Create the instance at class loading time.
+This is thread-safe but not lazy-loaded.
+
+5. Inner Class-based Lazy Instantiation (Best Approach #2)
+Uses a static inner helper class.
+Lazy-loaded and thread-safe without synchronization overhead.
+
+6. Enum-based Singleton (Best Approach #3)
+The most robust approach.
+Provides built-in thread-safety and protects against serialization and reflection attacks.
