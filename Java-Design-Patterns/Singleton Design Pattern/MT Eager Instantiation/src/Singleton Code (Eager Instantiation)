@@ -1,0 +1,29 @@
+📌 Singleton Design Pattern – Eager Instantiation
+🔷 What is Singleton?
+A Singleton is a design pattern that ensures:
+•	Only one object of a class is ever created.
+•	The same object is reused everywhere in the application.
+________________________________________
+🟧 Eager Instantiation (Early Loading)
+In eager instantiation, the Singleton object is created as soon as the class is loaded into memory, even before it is used.
+
+Using a static block or directly creating the object using a static reference variable, we initialize the Singleton object at class loading time.
+This object is stored in a private static reference variable like INSTANCE.
+This complete process is called eager (or early) instantiation of a Singleton class.
+----------------------------------------------
+📌 Important Note
+Since the Singleton object is created immediately when the class is loaded:
+•	There is no conditional check inside the static factory method (getInstance()).
+•	The static method always returns the same object without verifying whether it has already been created.
+•	Hence, there is no chance of thread switching during object creation.
+•	Therefore, eager instantiation is inherently thread-safe in a multithreaded environment.
+________________________________________
+🟨 Advantages of Eager Instantiation
+•	✔ Simple implementation
+•	✔ Thread-safe without synchronized blocks
+•	✔ Easy to understand and use
+________________________________________
+🟥 Disadvantages
+•	❌ Object is created even if the application never uses it
+•	❌ Not suitable for objects that are heavy/expensive to create
+•	❌ May waste memory if the instance is never required
