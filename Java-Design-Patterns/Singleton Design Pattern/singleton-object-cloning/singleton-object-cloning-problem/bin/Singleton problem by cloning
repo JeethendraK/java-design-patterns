@@ -1,0 +1,53 @@
+🧩 Cloning Problems in Singleton Classes
+----------------------------------------
+A Singleton class must ensure that only one instance of the class ever exists in the JVM.
+However, cloning can silently break this rule.
+
+⚠️ How Cloning Breaks Singleton
+----------------------------------------
+Even if your class does not implement Cloneable, it can still inherit the behavior if:
+•	Any parent class implements Cloneable
+•	The parent class overrides and exposes the clone() method
+Because of this:
+•	The clone() method (from Object) can create a new instance, violating the singleton guarantee.
+•	This leads to two separate objects: one created normally and one through cloning.
+
+🧐 Why This Happens
+-----------------
+•	clone() in Object (visible only in commons utils) is a protected method. (The protected methods of a class is visible only in the immediate subclass of the inheritance hierarchy)
+•	Any class can override it and make it public, returning super.clone().
+•	If your singleton does not stop this, a caller can simply do:
+Printer p2 = (Printer) p1.clone(); // ❌ Breaks Singleton
+
+✅ How to Fix It
+-----------------
+To preserve Singleton behavior, explicitly block cloning:
+
+@Override
+protected Object clone() throws CloneNotSupportedException {
+    throw new CloneNotSupportedException();
+}
+
+This ensures:
+---------------
+•	No one can clone the Singleton instance.
+•	The JVM will enforce Singleton integrity at runtime.
+
+
+🧠 Important Note: Constructor Is Not Executed During Cloning
+-------------------------------------------------------------
+When an object is created through the cloning process, the JVM:
+•	Creates a new object in memory
+•	Copies all the existing field values from the original object
+•	Does NOT call the constructor
+Why?
+-----
+Because the clone is created by copying the internal object data (a field-by-field copy), not by constructing a new object through the normal instantiation path.
+
+So:
+•	The cloned object is already initialized with the original object’s data.
+•	There is no need to execute the constructor separately.
+•	Therefore, cloning bypasses constructors entirely.
+This is exactly why cloning can break Singleton classes—because it silently creates a second object without invoking the constructor, bypassing the Singleton logic.
+
+
