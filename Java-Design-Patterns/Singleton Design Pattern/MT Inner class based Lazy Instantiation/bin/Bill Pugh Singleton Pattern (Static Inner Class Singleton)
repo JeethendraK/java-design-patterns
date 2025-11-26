@@ -1,0 +1,72 @@
+Bill Pugh Singleton Pattern (Static Inner Class Singleton)
+This is one of the best and most recommended ways to implement a Singleton in Java.
+It combines the benefits of lazy instantiation and thread safety without requiring synchronized blocks.
+________________________________________
+📌 How It Works
+In this approach, we use a static nested class (also called a static inner class) to hold the singleton instance.
+Key Idea:
+•	The outer class is loaded when the program first references it.
+•	But the inner class is NOT loaded until it is referenced.
+•	When the inner class loads, it creates the Singleton object using eager instantiation, but this happens only when needed.
+Thus, it becomes:
+•	Lazy Instantiation for the outer class object
+•	Eager Instantiation inside the inner class
+This gives the best of both worlds.
+________________________________________
+📝 Code
+public class Printer {
+
+    // Private constructor
+    private Printer() {
+        System.out.println("Printer :: 0-param constructor");
+    }
+
+    // Static Inner Class (Nested Class)
+    private static class PrinterInner {
+
+        // Eager instantiation inside inner class
+        private static final Printer INSTANCE = new Printer();
+        /*
+         * Note:
+         * The Singleton object is created inside the inner class.
+         * The inner class is loaded only when it is first accessed
+         * through the outer class static factory method.
+         * This means:
+         * → Lazy Loading for outer class
+         * → Eager Instantiation inside inner class
+         * → 100% thread-safe without synchronized
+         */
+    }
+
+    // Static Factory Method
+    public static Printer getInstance() {
+        return PrinterInner.INSTANCE;
+    }
+
+    // Business method
+    public void printmsg(String msg) {
+        System.out.println(msg);
+    }
+}
+________________________________________
+🔍 Why This Approach Is Powerful?
+________________________________________
+
+✔ Lazy Initialization
+Outer class loads, but Singleton object is created only when getInstance() is called.
+✔ Thread-Safe
+Class loading in Java is thread-safe by design.
+No need for synchronized, volatile, or double-checked locking.
+✔ High Performance
+No synchronization overhead—only one class-loading operation.
+________________________________________
+🟩 Advantages
+
+•	Simple and clean implementation
+•	Lazy loading supported
+•	Thread-safe without additional code
+•	No performance cost
+•	Recommended by many Java experts
+________________________________________
+🟥 Disadvantages
+•	None major — this is considered one of the best Singleton patterns
