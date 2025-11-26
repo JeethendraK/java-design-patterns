@@ -1,0 +1,103 @@
+1️⃣ What is Serialization?
+Serialization is the process of converting a Java object into a stream of bytes so that the object can be:
+•	Saved into a file
+•	Sent over the network
+•	Stored for later use (caching, persistence, etc.)
+✅ Requirements
+•	Only serializable objects can be serialized.
+•	A class becomes serializable only when it implements the
+java.io.Serializable interface → (marker interface, contains no methods).
+________________________________________
+2️⃣ What is Deserialization?
+Deserialization is the reverse process:
+•	Reading the byte stream from a file or network
+•	Reconstructing it into a Java object
+⚠️ Important Behavior
+During deserialization:
+•	Constructor does NOT execute
+•	Object fields are restored from the saved data
+This is the key reason why deserialization can break the Singleton pattern.
+________________________________________
+3️⃣ How Serialization Breaks a Singleton?
+Even if a class is a Singleton, if it implements Serializable, then:
+1.	Serializing the singleton instance → writes its state to a file
+2.	Deserializing → JVM creates a new object
+This violates the Singleton principle because now there are two objects.
+________________________________________
+4️⃣ Why does JVM create a new object during Deserialization?
+Because deserialization bypasses the constructor.
+JVM internally:
+•	Creates a new object
+•	Fills it with the byte-stream data
+•	Does NOT call the constructor
+Diagram (cleaned):
+   Java Application
+      (Singleton instance)
+            |
+         Serialization
+   (ObjectOutputStream)
+            |
+          FILE
+    (stores bits & bytes)
+            |
+       Deserialization
+   (ObjectInputStream)
+            |
+   NEW OBJECT CREATED
+ (constructor NOT called)
+________________________________________
+5️⃣ How to Fix Singleton + Serialization Issue?
+Use readResolve() method inside the Singleton class:
+private Object readResolve() {
+    return getInstance();
+}
+✔ Why this works?
+•	After deserialization, JVM calls readResolve()
+•	Instead of returning the newly created object
+→ it returns the original Singleton instance
+•	Duplicate object is discarded
+Thus, Singleton behavior remains intact.
+________________________________________
+6️⃣ What is serialVersionUID and Why is it Required?
+Always define:
+private static final long serialVersionUID = 1L;
+✔ Why?
+If you don’t define it:
+•	JVM generates one automatically based on class structure
+•	If you modify the class later (add field/remove field)
+•	Deserialization fails with:
+java.io.InvalidClassException:
+local class incompatible:
+stream class serialVersionUID = X,
+local class serialVersionUID = Y
+Defining serialVersionUID ensures backward compatibility across versions.
+________________________________________
+7️⃣ Why Should Singleton Classes Avoid Serializable?
+•	If a Singleton class implements Serializable directly or indirectly (via parent class)
+•	Deserialization can create multiple instances
+•	This breaks Singleton unless you explicitly handle it using readResolve()
+________________________________________
+8️⃣ Spring Singleton ≠ Java Singleton
+✔ Spring’s @Scope("singleton")
+•	Creates one object per Spring container
+•	NOT a true Java Singleton
+•	You can still create multiple instances using new
+✔ Java Singleton
+•	Ensures one instance in JVM
+•	Controlled using private constructor + static instance
+________________________________________
+📝 SUMMARY (Perfect for GitHub)
+🔹 Serialization
+Converts Java object → byte stream.
+🔹 Deserialization
+Converts byte stream → Java object (constructor not called).
+🔹 Singleton Break Issue
+Deserialization creates a new object, breaking Singleton.
+🔹 Fix
+Use readResolve() in Singleton class:
+private Object readResolve() {
+    return getInstance();
+}
+🔹 serialVersionUID
+Prevents InvalidClassException when class structure changes.
+
