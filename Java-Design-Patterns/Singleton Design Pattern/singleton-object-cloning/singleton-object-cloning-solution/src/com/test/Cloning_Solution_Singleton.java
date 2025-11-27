@@ -1,7 +1,7 @@
 package com.test;
 
 import com.sdp.Printer;
-public class Cloning_Problem_Singleton {
+public class Cloning_Solution_Singleton {
     public static void main(String[] args) {
         Printer p1 = Printer.getInstance();
         try{
